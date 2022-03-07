@@ -131,7 +131,6 @@
             console.log('Component mounted.')
         },
         methods:{
-
             updateInfo(){
                 this.$Progress.start();
                 if(this.form.password == ''){
@@ -182,9 +181,7 @@
         },
 
         created() {
-
             this.$Progress.start();
-
             axios.get("api/profile")
             .then(({ data }) => (this.form.fill(data.data)));
             

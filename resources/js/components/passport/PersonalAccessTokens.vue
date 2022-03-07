@@ -3,7 +3,6 @@
         cursor: pointer;
     }
 </style>
-
 <template>
     <div>
         <div>
@@ -13,7 +12,6 @@
                         <span>
                             Personal Access Tokens
                         </span>
-
                         <a class="action-link" tabindex="-1" @click="showCreateTokenForm">
                             Create New Token
                         </a>
@@ -25,7 +23,6 @@
                     <p class="mb-0" v-if="tokens.length === 0">
                         You have not created any personal access tokens.
                     </p>
-
                     <!-- Personal Access Tokens -->
                     <table class="table table-borderless mb-0" v-if="tokens.length > 0">
                         <thead>

@@ -29,9 +29,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                     <tr v-for="user in users.data" :key="user.id">
-
-                      <td>{{user.id}}</td>
+                     <tr v-for="(user,index) in users.data" :key="user.id">
+                      <td>{{index + 1}}</td>
                       <td class="text-capitalize">{{user.type}}</td>
                       <td class="text-capitalize">{{user.name}}</td>
                       <td><img :src="'data:image/png;base64,' + user.picture" width="100" alt="product"></td>
@@ -59,7 +58,6 @@
             <!-- /.card -->
           </div>
         </div>
-
 
         <div v-if="!$gate.isAdmin()">
             <not-found></not-found>
@@ -90,14 +88,12 @@
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
                             <has-error :form="form" field="email"></has-error>
                         </div>
-                    
                         <div class="form-group">
                             <label>Password</label>
                             <input v-model="form.password" type="password" name="password"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
                             <has-error :form="form" field="password"></has-error>
                         </div>
-                    
                         <div class="form-group">
                             <label>User Role</label>
                             <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
@@ -159,13 +155,11 @@
                     });
                     this.$Progress.finish();
                         //  Fire.$emit('AfterCreate');
-
                     this.loadUsers();
                 })
                 .catch(() => {
                     this.$Progress.fail();
                 });
-
             },
             editModal(user){
                 this.editmode = true;

@@ -2,15 +2,11 @@
   <section class="content">
     <div class="container-fluid">
         <div class="row">
-
           <div class="col-12">
-        
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Category List</h3>
-
                 <div class="card-tools">
-                  
                   <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProduct">
                       <i class="fa fa-plus-square"></i>
                       Add New
@@ -31,7 +27,6 @@
                   </thead>
                   <tbody>
                      <tr v-for="product in products.data" :key="product.id">
-
                       <td>{{product.id}}</td>
                       <td>{{product.name}}</td>
                       <td>{{product.description | truncate(30, '...')}}</td>
@@ -46,7 +41,6 @@
             <!-- /.card -->
           </div>
         </div>
-
         <!-- Modal -->
         <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNew" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -57,7 +51,6 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <form @submit.prevent="createProduct">
                     <div class="modal-body">
                         <div class="form-group">

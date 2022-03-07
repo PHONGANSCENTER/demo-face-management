@@ -7,6 +7,7 @@ use App\Models\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use \Illuminate\Http\Response;
 
 class VerificationController extends Controller
 {
@@ -24,4 +25,18 @@ class VerificationController extends Controller
 
         return view('welcome',compact('product','products','users'));
     }
+
+        /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Verfication  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function update($id)
+    {
+        $product = Product::where('id', $id)->update(['reported' => 0]);
+        return $this->sendResponse($product, 'Face Information has been reported');
+    }
 }
+

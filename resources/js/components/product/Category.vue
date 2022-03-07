@@ -30,9 +30,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                     <tr v-for="category in categories.data" :key="category.id">
+                     <tr v-for="(category,index) in categories.data" :key="category.id">
 
-                      <td>{{category.id}}</td>
+                      <td>{{index + 1}}</td>
                       <td class="text-capitalize">{{category.name}}</td>
                       <td>{{category.description}}</td>
                       <td>{{category.created_at|myDate}}</td>

@@ -2,15 +2,11 @@
   <section class="content">
     <div class="container-fluid">
         <div class="row">
-
           <div class="col-12">
-        
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Tag List</h3>
-
                 <div class="card-tools">
-                  
                   <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addNew">
                       <i class="fa fa-plus-square"></i>
                       Add New
@@ -28,7 +24,6 @@
                   </thead>
                   <tbody>
                      <tr v-for="tag in tags.data" :key="tag.id">
-
                       <td>{{tag.id}}</td>
                       <td>{{tag.name}}</td>
                       <td>
@@ -42,7 +37,6 @@
             <!-- /.card -->
           </div>
         </div>
-
         <!-- Modal -->
         <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNew" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -53,7 +47,6 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <form @submit.prevent="createTag">
                     <div class="modal-body">
                             <div class="form-group">
@@ -74,7 +67,6 @@
     </div>
   </section>
 </template>
-
 <script>
     export default {
         data () {
