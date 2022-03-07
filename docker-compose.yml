@@ -6,11 +6,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: vue-starter
+    container_name: ans-webapp
     restart: always
     tty: true
     environment:
-      SERVICE_NAME: vue-starter
+      SERVICE_NAME: ans-webapp
       SERVICE_TAGS: dev
     working_dir: /var/www
     volumes:
@@ -22,7 +22,7 @@ services:
   #Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: vue-starter-webserver
+    container_name: ans-webserver
     restart: always
     tty: true
     ports:
@@ -37,7 +37,7 @@ services:
   #MySQL Service
   db:
     image: mysql:8.0.17
-    container_name: vue-starter-db
+    container_name: ans-db
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     tty: true
