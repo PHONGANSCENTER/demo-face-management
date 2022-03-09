@@ -59,7 +59,6 @@
 @section('scripts')
 @parent
 <script>
-    // Auto reload face after 5 seconds
     setTimeout(function() {
         window.location = window.location;
     }, 30000);

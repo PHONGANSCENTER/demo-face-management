@@ -33,7 +33,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(product,index) in products.data" :key="product.id">
+                  <tr
+                    v-for="(product, index) in products.data"
+                    :key="product.id"
+                  >
                     <td>{{ index + 1 }}</td>
                     <td>{{ product.name }}</td>
                     <td>
@@ -59,14 +62,20 @@
                       <a
                         v-if="$gate.isAdmin()"
                         href="#"
-                        @click="deleteProduct(product.id)"
+                        @click="
+                          deleteProduct(
+                            product.id,
+                            product.camera_id,
+                            product.created_at
+                          )
+                        "
                       >
                         <i class="fa fa-2x fa-trash red"></i>
                       </a>
                       <a
                         v-if="$gate.isUser()"
                         href="#"
-                        @click="report(product.image_id,product.id)"
+                        @click="report(product.image_id, product.id)"
                       >
                         <i class="fas fa-2x fa-user-times"></i>
                       </a>
@@ -131,8 +140,9 @@
                       :class="{ 'is-invalid': form.errors.has('name') }"
                     />
                     <input
-                      v-model="form.name"
                       type="text"
+                      v-model="form.oldName"
+                      :value="form.name"
                       name="oldName"
                       class="form-control"
                       hidden
@@ -228,6 +238,7 @@ export default {
         id: "",
         category: "",
         name: "",
+        oldName: "",
         description: "",
         tags: [],
         photo: "",
@@ -314,7 +325,7 @@ export default {
           });
         });
     },
-    report(image_id,id) {
+    report(image_id, id) {
       var myHeaders = new Headers();
       myHeaders.append("x-api-key", "fa78ddc2-18fa-4141-a97f-2324a0b4c48e");
 
@@ -392,6 +403,8 @@ export default {
             icon: "success",
             title: response.data.message,
           });
+
+          // AI
           fetch(
             "http://18.138.81.76:8000/api/v1/recognition/faces?subject=" +
               this.form.name +
@@ -402,16 +415,53 @@ export default {
             .then((result) => console.log(result))
             .catch((error) => console.log("error", error));
 
+          //VCV
+          fetch(
+            "https://vcloud.vcv.vn:20970/api/v1/AIFaceDetection/update",
+            requestVCVOptions
+          )
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .catch((error) => console.log("error", error));
+
           this.$Progress.finish();
-          //  Fire.$emit('AfterCreate');
-          this.deleteProduct(this.form.id);
+          this.deleteUpdate(this.form.id);
           this.loadProducts();
         })
         .catch(() => {
           this.$Progress.fail();
         });
     },
-    deleteProduct(id) {
+    deleteUpdate(id) {
+      this.form
+        .delete("api/product/" + id)
+        .then(() => {
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+          this.loadProducts();
+        })
+        .catch((data) => {
+          Swal.fire("Failed!", data.message, "warning");
+        });
+    },
+    deleteProduct(id, camera_id, created_at) {
+      var myVCVHeaders = new Headers();
+      myVCVHeaders.append("Content-Type", "application/json");
+
+      var rawVCV = JSON.stringify({
+        cameraId: camera_id,
+        id: id,
+        newId: null,
+        punchIn: created_at,
+        punchOut: null,
+      });
+
+      var requestVCVOptions = {
+        method: "POST",
+        headers: myVCVHeaders,
+        body: rawVCV,
+        redirect: "follow",
+      };
+
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -420,13 +470,20 @@ export default {
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
-        // Send request to the server
+        //VCV
+        fetch(
+          "https://vcloud.vcv.vn:20970/api/v1/AIFaceDetection/update",
+          requestVCVOptions
+        )
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.log("error", error));
+
         if (result.value) {
           this.form
             .delete("api/product/" + id)
             .then(() => {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
-              // Fire.$emit('AfterCreate');
               this.loadProducts();
             })
             .catch((data) => {

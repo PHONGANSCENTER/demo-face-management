@@ -1,16 +1,15 @@
 version: '3.1'
 services:
-
   #PHP Service
   app:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: vue-starter
+    container_name: ans-webapp
     restart: always
     tty: true
     environment:
-      SERVICE_NAME: vue-starter
+      SERVICE_NAME: ans-webapp
       SERVICE_TAGS: dev
     working_dir: /var/www
     volumes:
@@ -22,7 +21,7 @@ services:
   #Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: vue-starter-webserver
+    container_name: ans-webserver
     restart: always
     tty: true
     ports:
@@ -37,14 +36,14 @@ services:
   #MySQL Service
   db:
     image: mysql:8.0.17
-    container_name: vue-starter-db
+    container_name: ans-db
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     tty: true
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: laravel
+      MYSQL_DATABASE: ans
       MYSQL_ROOT_PASSWORD: 123456
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
@@ -59,6 +58,14 @@ services:
     restart: unless-stopped
     ports:
       - 8080:8080
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8090:80
+    environment:
+      - PMA_ARBITRARY=1
       
 #Docker Networks
 networks:

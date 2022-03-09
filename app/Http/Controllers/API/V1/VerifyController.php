@@ -6,6 +6,29 @@ use App\Models\Product;
 
 class VerifyController extends BaseController
 {
+    protected $product = '';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $products = $this->product->where('reported', 1)->latest()->with('category', 'tags')->paginate(10);
+        return $this->sendResponse($products, 'Face list');
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -15,7 +38,7 @@ class VerifyController extends BaseController
      */
     public function update($id)
     {
-        $product = Product::where('id', $id)->update(['reported' => 0]);
-        return $this->sendResponse($product, 'Face Information has been reported');
+        $products = $this->product->where('id', $id)->update(['reported' => 0]);
+        return $this->sendResponse($products, 'Face Information has been reported');
     }
 }

@@ -37,7 +37,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <router-link to="/dashboard" class="brand-link">
+    <router-link to="/products" class="brand-link">
       <img src="{{ asset('/images/logo.png') }}" alt="The Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Face Management</span>
@@ -102,7 +102,7 @@
   <footer class="main-footer">
     {{-- To the right --}}
     <div class="float-right d-none d-sm-block">
-      <b>Version</b> 3.0.0
+      <b>Version</b> 1.0.0
     </div>
     {{-- Default to the left --}}
     <strong>Copyright &copy; 2021-2022</a> VCV.</strong> All rights reserved.
