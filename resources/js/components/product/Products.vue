@@ -49,7 +49,7 @@
                     <td>{{ product.price * 100 }}</td>
                     <td>{{ product.description | truncate(30, "...") }}</td>
                     <td>{{ product.category.name }}</td>
-                    <td>{{ product.created_at | myDate }}</td>
+                    <td>{{ product.created_at}}</td>
                     <td>
                       <a
                         v-if="$gate.isAdmin()"
