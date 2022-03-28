@@ -41,4 +41,10 @@ class VerifyController extends BaseController
         $products = $this->product->where('id', $id)->update(['reported' => 0]);
         return $this->sendResponse($products, 'Face Information has been reported');
     }
+
+    public function destroy($id)
+    {
+        $products = $this->product->where('id', $id)->update(['reported' => 1]);
+        return $this->sendResponse($products, 'Face Information has been reported');
+    }
 }

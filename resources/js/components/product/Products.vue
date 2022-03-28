@@ -142,7 +142,6 @@
                     <input
                       type="text"
                       v-model="form.oldName"
-                      :value="form.name"
                       name="oldName"
                       class="form-control"
                       hidden
@@ -423,10 +422,16 @@ export default {
             .then((response) => response.text())
             .then((result) => console.log(result))
             .catch((error) => console.log("error", error));
-
-          this.$Progress.finish();
-          this.deleteUpdate(this.form.id);
-          this.loadProducts();
+          axios
+            .delete("api/verify/" + this.form.id)
+            .then(() => {
+              Swal.fire("Deleted!", "Your file has been updated.", "success");
+              this.$Progress.finish();
+              this.loadProducts();
+            })
+            .catch((data) => {
+              Swal.fire("Failed!", data.message, "warning");
+            });
         })
         .catch(() => {
           this.$Progress.fail();
@@ -464,7 +469,7 @@ export default {
 
       Swal.fire({
         title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        text: "You won't be able to reverted this!",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
@@ -502,26 +507,16 @@ export default {
         confirmButtonText: "Yes, check-in it!",
       }).then((result) => {
         // Send request to the server
-        if (result.value) {
-          this.form
-            .delete("api/product/" + id)
-            .then(() => {
-              Swal.fire(
-                "Check-in done!",
-                "Your file about face has been deleted.",
-                "success"
-              );
-              // Fire.$emit('AfterCreate');
-              this.loadProducts();
-            })
-            .catch((data) => {
-              Swal.fire("Failed!", data.message, "warning");
-            });
-        }
+        Swal.fire(
+          "Check-in done!",
+          "Your file about face has been deleted.",
+          "success"
+        );
+        // Fire.$emit('AfterCreate');
+        this.loadProducts();
       });
     },
   },
-  mounted() {},
   created() {
     this.$Progress.start();
     this.loadProducts();
