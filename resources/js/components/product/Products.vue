@@ -49,14 +49,14 @@
                     <td>{{ product.price * 100 }}</td>
                     <td>{{ product.description | truncate(30, "...") }}</td>
                     <td>{{ product.category.name }}</td>
-                    <td>{{ product.created_at}}</td>
+                    <td>{{ product.created_at }}</td>
                     <td>
                       <a
                         v-if="$gate.isAdmin()"
                         href="#"
                         @click="editModal(product)"
                       >
-                        <i class="fa fa-2x fa-edit blue"></i>
+                        <i class="fa fa-edit blue"></i>
                       </a>
                       &nbsp;
                       <a
@@ -70,14 +70,14 @@
                           )
                         "
                       >
-                        <i class="fa fa-2x fa-trash red"></i>
+                        <i class="fa fa-trash red"></i>
                       </a>
                       <a
                         v-if="$gate.isUser()"
                         href="#"
                         @click="report(product.image_id, product.id)"
                       >
-                        <i class="fas fa-2x fa-user-times"></i>
+                        <i class="fas fa-user-times"></i>
                       </a>
                     </td>
                   </tr>
@@ -139,19 +139,24 @@
                       class="form-control"
                       :class="{ 'is-invalid': form.errors.has('name') }"
                     />
+                    <has-error :form="form" field="name"></has-error>
+                    <br />
+                    <label>Old Name</label>
                     <input
+                      disabled="disabled"
                       type="text"
                       v-model="form.oldName"
                       name="oldName"
                       class="form-control"
-                      hidden
+                      :class="{ 'is-invalid': form.errors.has('oldName') }"
                     />
-                    <has-error :form="form" field="name"></has-error>
+                    <has-error :form="form" field="oldName"></has-error>
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Description</label>
                   <input
+                    disabled="disabled"
                     v-model="form.description"
                     type="text"
                     name="description"
@@ -161,8 +166,9 @@
                   <has-error :form="form" field="description"></has-error>
                 </div>
                 <div class="form-group">
-                  <label>Accuracy</label>
+                  <label>Accuracy (100%)</label>
                   <input
+                    disabled="disabled"
                     v-model="form.price"
                     type="text"
                     name="price"
@@ -390,9 +396,7 @@ export default {
         body: rawVCV,
         redirect: "follow",
       };
-
       this.$Progress.start();
-
       this.form
         .put("api/product/" + this.form.id)
         .then((response) => {
@@ -402,40 +406,60 @@ export default {
             icon: "success",
             title: response.data.message,
           });
-
-          // AI
           fetch(
             "http://18.138.81.76:8000/api/v1/recognition/faces?subject=" +
               this.form.name +
               "&det_prob_threshold=0.9",
             requestAiOptions
           )
-            .then((response) => response.text())
-            .then((result) => console.log(result))
-            .catch((error) => console.log("error", error));
+            .then((response) => {
+              //Debug ANS
+              console.log(response);
+              Swal.fire(
+                "Updated to Face Model!",
+                "Your face has been update to model.",
+                "success"
+              );
+              fetch(
+                "https://vcloud.vcv.vn:20970/api/v1/AIFaceDetection/update",
+                requestVCVOptions
+              )
+                .then((response) => {
+                  //Debug VCV
+                  console.log(response);
+                  console.log(this.form.oldName);
+                  Swal.fire(
+                    "Updated to VCV Attendance!",
+                    "Your attendance has been update to model.",
+                    "success"
+                  );
 
-          //VCV
-          fetch(
-            "https://vcloud.vcv.vn:20970/api/v1/AIFaceDetection/update",
-            requestVCVOptions
-          )
-            .then((response) => response.text())
-            .then((result) => console.log(result))
-            .catch((error) => console.log("error", error));
-          axios
-            .delete("api/verify/" + this.form.id)
-            .then(() => {
-              Swal.fire("Deleted!", "Your file has been updated.", "success");
-              this.$Progress.finish();
-              this.loadProducts();
+                  axios
+                    .delete("api/verify/" + this.form.id)
+                    .then(() => {
+                      Swal.fire(
+                        "Updated to system!",
+                        "Your attendance has been update to model.",
+                        "success"
+                      );
+                      this.loadProducts();
+                    })
+                    .catch((error) => {
+                      Swal.fire("Failed!", error.message, "warning");
+                    });
+                })
+                .catch((error) => {
+                  Swal.fire("Failed!", error.message, "warning");
+                });
             })
-            .catch((data) => {
-              Swal.fire("Failed!", data.message, "warning");
+            .catch((error) => {
+              Swal.fire("Failed!", error.message, "warning");
             });
         })
         .catch(() => {
           this.$Progress.fail();
         });
+        console.log("Updated done!")
     },
     deleteUpdate(id) {
       this.form
@@ -480,21 +504,26 @@ export default {
           "https://vcloud.vcv.vn:20970/api/v1/AIFaceDetection/update",
           requestVCVOptions
         )
-          .then((response) => response.text())
-          .then((result) => console.log(result))
-          .catch((error) => console.log("error", error));
-
-        if (result.value) {
-          this.form
-            .delete("api/product/" + id)
-            .then(() => {
-              Swal.fire("Deleted!", "Your file has been deleted.", "success");
-              this.loadProducts();
-            })
-            .catch((data) => {
-              Swal.fire("Failed!", data.message, "warning");
-            });
-        }
+          .then((response) => {
+            if (result.value) {
+              this.form
+                .delete("api/product/" + id)
+                .then(() => {
+                  Swal.fire(
+                    "Deleted!",
+                    "Your file has been deleted.",
+                    "success"
+                  );
+                  this.loadProducts();
+                })
+                .catch((data) => {
+                  Swal.fire("Failed!", data.message, "warning");
+                });
+            }
+          })
+          .catch((error) => {
+            Swal.fire("Failed!", error.message, "warning");
+          });
       });
     },
     updatedModel(id) {

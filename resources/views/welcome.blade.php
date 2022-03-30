@@ -1,7 +1,7 @@
 @extends('layouts.index')
 @section('content')
 
-@if($product)
+@if($product->reported != 0)
 <div class="card">
     <img src="data:image/png;base64,{{$product->photo}}" class="card-img-top border border-success " alt="...">
     <div class="card-body">
@@ -11,24 +11,19 @@
             <div class="col d-flex col-md">
                 @foreach($users as $user)
                 @if($user->name == $product->name)
-                    <img src="data:image/png;base64,{{$user->picture}}" class="card-img-top img-circle border"  width="50%"  alt="Image Register">
+                    <img src="data:image/png;base64,{{$user->picture}}" class="card-img-top img-circle border"  width="50%" height="50%" alt="Image Register">
                 @endif
                 @endforeach
             </div>
             <div class="col col-md">
-                <p class="card-text">FaceID: {{$product->name}}</p>
-                <p class="card-text">Accuracy: {{$product->price * 100}} %</p>
+                <p class="card-text">ID: {{$product->name}}</p>
+                <p class="card-text">Acc: {{$product->price * 100}}</p>
                 <p class="card-text">Verify by Face </p>
             </div>
         </div>
     </div>
-    <div class="text-center mb-3" hidden>
-        <form action="/" method="get" style="display: inline-block;" enctype="multipart/form-data">
-            <input type="number" value="{{$product->id}}" name="id" hidden>
-            <input type="submit" class="btn btn-xs btn-danger" value="report">
-        </form>
-    </div>
 </div>
+@endif
 <hr>
 <section>
     @foreach($products->reverse() as $key => $st)
@@ -53,7 +48,6 @@
     @endif
     @endforeach
 </section>
-@endif
 
 @endsection
 @section('scripts')
